@@ -132,7 +132,7 @@ typedef struct EbSvtAv1DecConfiguration {
      * @ *p_app_data     Callback data.
      * @ *config_ptr     Pointer passed back to the client during callbacks, it will be
      *                   loaded with default parameters from the library. */
-EB_API EbErrorType eb_dec_init_handle(EbComponentType **p_handle, void *p_app_data,
+EB_API EbErrorType svt_av1_dec_init_handle(EbComponentType **p_handle, void *p_app_data,
                                       EbSvtAv1DecConfiguration *config_ptr);
 
 /* STEP 2: Set configuration parameters.
@@ -140,7 +140,7 @@ EB_API EbErrorType eb_dec_init_handle(EbComponentType **p_handle, void *p_app_da
      * Parameter:
      * @ *svt_dec_component             Decoder handle.
      * @ *pComponentParameterStructure  Decoder and buffer configurations will be copied to the library. */
-EB_API EbErrorType eb_svt_dec_set_parameter(
+EB_API EbErrorType svt_av1_dec_set_parameter(
     EbComponentType *svt_dec_component,
     EbSvtAv1DecConfiguration *
         pComponentParameterStructure); // pComponentParameterStructure contents will be copied to the library
@@ -149,7 +149,7 @@ EB_API EbErrorType eb_svt_dec_set_parameter(
      *
      * Parameter:
      * @ *svt_dec_component  Decoder handle. */
-EB_API EbErrorType eb_init_decoder(EbComponentType *svt_dec_component);
+EB_API EbErrorType svt_av1_dec_init(EbComponentType *svt_dec_component);
 
 /*!\brief STEP 4: Decodes a frame with associated data. The data in *data
      * should belong to one frame, possibly with sequence header and metadata.
@@ -160,13 +160,13 @@ EB_API EbErrorType eb_init_decoder(EbComponentType *svt_dec_component);
      * @ data_size              Data size in bytes
      *
      *  Returns EB_ErrorNone if the coded data has been processed successfully. */
-EB_API EbErrorType eb_svt_decode_frame(EbComponentType *svt_dec_component, const uint8_t *data,
+EB_API EbErrorType svt_av1_dec_frame(EbComponentType *svt_dec_component, const uint8_t *data,
                                        const size_t data_size, uint32_t is_annexb);
 
 /* STEP 5: Get the next decoded picture. When several output pictures
      * have been generated, calling this function multiple times will
      * iterate over the decoded pictures. The previous output picture becomes
-     * unavailable after the eb_svt_dec_get_picture() or one of the decoding
+     * unavailable after the svt_av1_dec_get_picture() or one of the decoding
      * functions is called. The pictures are returned in their display order.
      *
      * Parameter:
@@ -178,7 +178,7 @@ EB_API EbErrorType eb_svt_decode_frame(EbComponentType *svt_dec_component, const
      *  Returns EB_ErrorNone if the picture has been returned successfully.
      *  Returns EB_DecNoOutputPicture if the next output picture has not
      *  been generated yet. Calling a decoding function is needed to generate more pictures. */
-EB_API EbErrorType eb_svt_dec_get_picture(EbComponentType *   svt_dec_component,
+EB_API EbErrorType svt_av1_dec_get_picture(EbComponentType *   svt_dec_component,
                                           EbBufferHeaderType *p_buffer,
                                           EbAV1StreamInfo *stream_info, EbAV1FrameInfo *frame_info);
 
@@ -186,13 +186,13 @@ EB_API EbErrorType eb_svt_dec_get_picture(EbComponentType *   svt_dec_component,
      *
      * Parameter:
      * @ *svt_dec_component     Decoder handle */
-EB_API EbErrorType eb_deinit_decoder(EbComponentType *svt_dec_component);
+EB_API EbErrorType svt_av1_dec_deinit(EbComponentType *svt_dec_component);
 
 /* STEP 7: Deconstruct decoder handler.
      *
      * Parameter:
      * @ *svt_dec_component     Decoder handle */
-EB_API EbErrorType eb_dec_deinit_handle(EbComponentType *svt_dec_component);
+EB_API EbErrorType svt_av1_dec_deinit_handle(EbComponentType *svt_dec_component);
 
 #ifdef __cplusplus
 }

@@ -135,24 +135,7 @@ typedef struct EbSvtAv1DecConfiguration {
 EB_API EbErrorType eb_dec_init_handle(EbComponentType **p_handle, void *p_app_data,
                                       EbSvtAv1DecConfiguration *config_ptr);
 
-/* STEP 2: Peek into sequence header.
-     *
-     * The function is used to find the sequence header
-     * before the decoder is initialized. The decoder needs
-     * to read the sequence header again when starting decoding.
-     * The function can be called multiple times before it returns
-     * the EB_ErrorNone, which means the the sequence header is found.
-     * When the OBU is not a valid sequence header, EB_DecUnsupportedBitstream
-     * is returned.
-     *
-     * Parameter:
-     * @ *header            Sequence header info.
-     * @ *data              Input buffer pointer.
-     * @ data_size          Input data size in bytes */
-EB_API EbErrorType eb_peek_sequence_header(EbAV1StreamInfo *header, const uint8_t *data,
-                                           const uint32_t data_size);
-
-/* STEP 3: Set configuration parameters.
+/* STEP 2: Set configuration parameters.
      *
      * Parameter:
      * @ *svt_dec_component             Decoder handle.
@@ -162,25 +145,13 @@ EB_API EbErrorType eb_svt_dec_set_parameter(
     EbSvtAv1DecConfiguration *
         pComponentParameterStructure); // pComponentParameterStructure contents will be copied to the library
 
-/* STEP 4: Initialize decoder and allocate memory to necessary buffers.
+/* STEP 3: Initialize decoder and allocate memory to necessary buffers.
      *
      * Parameter:
      * @ *svt_dec_component  Decoder handle. */
 EB_API EbErrorType eb_init_decoder(EbComponentType *svt_dec_component);
 
-/*!\brief STEP 5: Decodes one OBU.
-     *
-     * Parameter:
-     * @ *svt_dec_component     Decoder handle
-     * @ *data                  Buffer with data
-     * @ data_size              Data size in bytes
-     * @ *user_priv             pointer to the private user data
-     *
-     *  Returns EB_ErrorNone if the coded data has been processed successfully. */
-EB_API EbErrorType eb_svt_decode_obu(EbComponentType *svt_dec_component, const uint8_t *data,
-                                     const uint32_t data_size);
-
-/*!\brief STEP 5-alt-1: Decodes a frame with associated data. The data in *data
+/*!\brief STEP 4: Decodes a frame with associated data. The data in *data
      * should belong to one frame, possibly with sequence header and metadata.
      *
      * Parameter:
@@ -192,23 +163,7 @@ EB_API EbErrorType eb_svt_decode_obu(EbComponentType *svt_dec_component, const u
 EB_API EbErrorType eb_svt_decode_frame(EbComponentType *svt_dec_component, const uint8_t *data,
                                        const size_t data_size, uint32_t is_annexb);
 
-/*!\brief STEP 5-alt-2: Decodes a temporal unit (TU). Decoding a TU
-     * may result in several output pictures generated if output_all_layers
-     * was set to 1 in the  EbSvtAv1DecConfiguration.
-     * In this case, calling eb_svt_dec_get_picture() multiple times
-     * would output pictures that belong to the corresponding quality layers
-     * in the increasing order.
-     *
-     * Parameter:
-     * @ *svt_dec_component     Decoder handle
-     * @ *data                  Buffer with data
-     * @ data_size              Data size in bytes
-     *
-     *  Returns EB_ErrorNone if the coded data has been processed successfully. */
-EB_API EbErrorType eb_svt_decode_tu(EbComponentType *svt_dec_component, const uint8_t *data,
-                                    const uint32_t data_size);
-
-/* STEP 6: Get the next decoded picture. When several output pictures
+/* STEP 5: Get the next decoded picture. When several output pictures
      * have been generated, calling this function multiple times will
      * iterate over the decoded pictures. The previous output picture becomes
      * unavailable after the eb_svt_dec_get_picture() or one of the decoding
@@ -227,39 +182,17 @@ EB_API EbErrorType eb_svt_dec_get_picture(EbComponentType *   svt_dec_component,
                                           EbBufferHeaderType *p_buffer,
                                           EbAV1StreamInfo *stream_info, EbAV1FrameInfo *frame_info);
 
-/* STEP 7: Deinitialize decoder library.
+/* STEP 6: Deinitialize decoder library.
      *
      * Parameter:
      * @ *svt_dec_component     Decoder handle */
 EB_API EbErrorType eb_deinit_decoder(EbComponentType *svt_dec_component);
 
-/* STEP 8: Deconstruct decoder handler.
+/* STEP 7: Deconstruct decoder handler.
      *
      * Parameter:
      * @ *svt_dec_component     Decoder handle */
 EB_API EbErrorType eb_dec_deinit_handle(EbComponentType *svt_dec_component);
-
-/*  Flush a decoder
-     *
-     *  Clears the decoder frame buffers.
-     *  The decoder is ready to parse a new sequence header.
-     *
-     *  Parameter:
-     *  @ *svt_dec_component     Decoder handle
-     *
-     *  Returns EB_ErrorNone if the decode buffer has been flushed successfully.
-     */
-EB_API EbErrorType eb_dec_flush(EbComponentType *svt_dec_component);
-
-/* Returns information about the bitstream and
-     * the last decoded frame.
-     *
-     * Parameter:
-     * @ *svt_dec_component     Decoder handle.
-     * @ *stream_info           Sequence header info
-     * @ *frame_info            Last decoded frame info */
-EB_API EbErrorType eb_get_stream_info(EbComponentType *svt_dec_component,
-                                      EbAV1StreamInfo *stream_info, EbAV1FrameInfo *frame_info);
 
 #ifdef __cplusplus
 }
